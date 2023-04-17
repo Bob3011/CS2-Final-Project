@@ -33,6 +33,16 @@ public:
 	{
 		return text;
 	}
+
+	vector <string> get_sentenses()
+	{
+		return sentences;
+	}
+
+	string manip_sentenses(int n)
+	{
+		return sentences[n];
+	}
 };
 
 #endif // !classDocument

@@ -10,10 +10,9 @@ class file_compialtion
 {
 private:
 	vector<Document> docs;
-
 public:
 	// function to calculate Hamming distance
-	int hammingDistance(string str1, string str2)
+	bool hammingDistance(string str1, string str2)
 	{
 		int i = 0, count = 0;
 		while (str1[i] != '\0') {
@@ -21,8 +20,9 @@ public:
 				count++;
 			i++;
 		}
-		return count;
+		return count == 0;
 	}
+
 
 	// Fills lps[] for given pattern pat[0..M-1]
 	vector<int> computeLPS(string pattern) {
@@ -48,7 +48,7 @@ public:
 		}
 		return lps;
 	}
-	void kmpSearch(string text, string pattern) {
+	bool kmpSearch(string pattern, string text) {
 		int n = text.length();
 		int m = pattern.length();
 		vector<int> lps = computeLPS(pattern);
@@ -59,7 +59,7 @@ public:
 				j++;
 			}
 			if (j == m) {
-				cout << "Pattern found at index " << i - j << endl;
+				return true;
 				j = lps[j - 1];
 			}
 			else if (i < n && text[i] != pattern[j]) {
@@ -71,8 +71,10 @@ public:
 				}
 			}
 		}
+		return false;
 	}
-	// Prints occurrences of txt[] in pat[]
+
+	
 	// d is the number of characters in the input alphabet
 #define d 256
 
@@ -80,10 +82,11 @@ public:
 	txt -> text
 	q -> A prime number
 */
-	void rabinKarp(char pat[], char txt[], int q)
+	bool rabinKarp(string pat, string txt)
 	{
-		int M = strlen(pat);
-		int N = strlen(txt);
+		int q = INT_MAX;
+		int M = pat.length();
+		int N = txt.length();
 		int i, j;
 		int p = 0; // hash value for pattern
 		int t = 0; // hash value for txt
@@ -117,9 +120,9 @@ public:
 				// if p == t and pat[0...M-1] = txt[i, i+1,
 				// ...i+M-1]
 
-				if (j == M)
-					cout << "Pattern found at index " << i
-					<< endl;
+				if (j == M) {
+					return true;
+				}
 			}
 
 			// Calculate hash value for next window of text:
@@ -133,10 +136,13 @@ public:
 					t = (t + q);
 			}
 		}
+		return false;
 	}
 
 
+
 #define NO_OF_CHARS 256
+
 	// The preprocessing function for Boyer Moore's
 	// bad character heuristic
 	void badCharHeuristic(string str, int size,
@@ -153,9 +159,10 @@ public:
 		for (i = 0; i < size; i++)
 			badchar[(int)str[i]] = i;
 	}
+
 	/* A pattern searching function that uses Bad
 	Character Heuristic of Boyer Moore Algorithm */
-	void boyerMoore(string txt, string pat)
+	bool boyerMoore(string pat, string txt)
 	{
 		int m = pat.size();
 		int n = txt.size();
@@ -184,7 +191,8 @@ public:
 			the above loop */
 			if (j < 0)
 			{
-				cout << "pattern occurs at shift = " << s << endl;
+				// pattern found, return true
+				return true;
 
 				/* Shift the pattern so that the next
 				character in text aligns with the last
@@ -207,26 +215,36 @@ public:
 				character. */
 				s += max(1, j - badchar[txt[s + j]]);
 		}
+
+		// pattern not found, return false
+		return false;
 	}
 
 
-	int bruteForceStringMatch(string text, string pattern) {
+
+	bool bruteForceStringMatch(string pattern, string text) 
+	{
 		int textLen = text.length();
 		int patternLen = pattern.length();
-		for (int i = 0; i <= textLen - patternLen; i++) {
+		for (int i = 0; i <= textLen - patternLen; i++) 
+		{
 			bool matchFound = true;
-			for (int j = 0; j < patternLen; j++) {
-				if (text[i + j] != pattern[j]) {
+			for (int j = 0; j < patternLen; j++) 
+			{
+				if (text[i + j] != pattern[j]) 
+				{
 					matchFound = false;
 					break;
 				}
 			}
-			if (matchFound) {
-				return i;
+			if (matchFound) 
+			{
+				return true;
 			}
 		}
-		return -1;
+		return false;
 	}
+
 
 	void initialize_docs() {
 		Document temp_doc;
@@ -235,6 +253,16 @@ public:
 			docs.push_back(temp_doc);
 			docs[i].fillInText();
 		}
+	}
+
+	vector <Document> get_docs()
+	{
+		return docs;
+	}
+
+	Document manip_docs(int n)
+	{
+		return docs[n];
 	}
 };
 #endif // !classFile_compialtion
