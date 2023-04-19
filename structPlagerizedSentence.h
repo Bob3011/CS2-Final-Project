@@ -1,6 +1,6 @@
 #ifndef structPS
 #define structPS
-
+#pragma once
 #include <iostream>
 using namespace std;
 

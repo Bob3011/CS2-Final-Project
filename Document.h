@@ -1,6 +1,6 @@
 #ifndef classDocument
 #define classDocument
-
+#pragma once
 #include <string>
 #include <vector>
 using namespace std;

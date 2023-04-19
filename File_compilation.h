@@ -1,5 +1,6 @@
 #ifndef classFile_compilation
 #define classFile_compilation
+#pragma once
 #include <iostream>
 #include <string>
 #include <vector>
@@ -11,16 +12,52 @@ class file_compialtion
 private:
 	vector<Document> docs;
 public:
-	// function to calculate Hamming distance
-	bool hammingDistance(string str1, string str2)
+
+	file_compialtion()
 	{
-		int i = 0, count = 0;
-		while (str1[i] != '\0') {
-			if (str1[i] != str2[i])
-				count++;
-			i++;
+		ifstream database;
+		database.open("Dir.txt");
+
+		if (database.fail())
+		{
+			cout << "an error has occured" << endl;
+			exit(1);
 		}
-		return count == 0;
+		else
+		{
+			string file_Name;
+			while (getline(database, file_Name))
+			{
+				int i = 0;
+				ifstream tempFile;
+
+				tempFile.open(file_Name);
+				Document tempF;
+				tempF.set_direcotry(file_Name);
+				docs.push_back(tempF);
+				docs[i].fillInText();
+
+				i++;
+			}
+		}
+	}
+	// function to calculate Hamming distance
+	bool hammingDistance(string text, string pattern)
+	{
+		for (int i = 0; i < text.size(); i++) {
+			int counter = 0;
+			int k = i;
+			for (int j = 0; j < pattern.size(); j++) {
+				if (pattern[j] == text[k]) {
+					counter++;
+					k++;
+				}
+			}
+			if (counter == pattern.size()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 
@@ -74,7 +111,7 @@ public:
 		return false;
 	}
 
-	
+
 	// d is the number of characters in the input alphabet
 #define d 256
 
@@ -145,8 +182,7 @@ public:
 
 	// The preprocessing function for Boyer Moore's
 	// bad character heuristic
-	void badCharHeuristic(string str, int size,
-		int badchar[NO_OF_CHARS])
+	void badCharHeuristic(string str, int size, int badchar[NO_OF_CHARS])
 	{
 		int i;
 
@@ -222,22 +258,22 @@ public:
 
 
 
-	bool bruteForceStringMatch(string pattern, string text) 
+	bool bruteForceStringMatch(string pattern, string text)
 	{
 		int textLen = text.length();
 		int patternLen = pattern.length();
-		for (int i = 0; i <= textLen - patternLen; i++) 
+		for (int i = 0; i <= textLen - patternLen; i++)
 		{
 			bool matchFound = true;
-			for (int j = 0; j < patternLen; j++) 
+			for (int j = 0; j < patternLen; j++)
 			{
-				if (text[i + j] != pattern[j]) 
+				if (text[i + j] != pattern[j])
 				{
 					matchFound = false;
 					break;
 				}
 			}
-			if (matchFound) 
+			if (matchFound)
 			{
 				return true;
 			}
@@ -246,14 +282,14 @@ public:
 	}
 
 
-	void initialize_docs() {
+	/*void initialize_docs() {
 		Document temp_doc;
 		for (int i = 0; i < 6; i++) {
 			temp_doc.set_direcotry("Corpus/file" + to_string(i + 1) + ".txt");
 			docs.push_back(temp_doc);
 			docs[i].fillInText();
 		}
-	}
+	}*/
 
 	vector <Document> get_docs()
 	{
