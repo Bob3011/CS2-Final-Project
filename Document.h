@@ -1,5 +1,3 @@
-#ifndef classDocument
-#define classDocument
 #pragma once
 #include <string>
 #include <vector>
@@ -14,35 +12,12 @@ public:
 	void fillInText();
 	void adjustSentence();
 
-	void set_direcotry(string d)
-	{
-		directory = d;
-	}
-
-	string get_directory()
-	{
-		return directory;
-	}
-
-	void set_txt(string t)
-	{
-		text = t;
-	}
-
-	string get_txt()
-	{
-		return text;
-	}
-
-	vector <string> get_sentenses()
-	{
-		return sentences;
-	}
-
-	string manip_sentenses(int n)
-	{
-		return sentences[n];
-	}
+	void set_directory(string d);
+	string get_directory();
+	void set_txt(string t);
+	string get_txt();
+	vector <string> get_sentenses();
+	string manip_sentenses(int n);
+	bool check_name(string name);
+	void addToDir(double num, string n);
 };
-
-#endif // !classDocument

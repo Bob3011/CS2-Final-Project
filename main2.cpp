@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 #include "Document.h"
 #include "File_compilation.h"
 #include "program_run.h"
@@ -9,24 +10,24 @@ using namespace std;
 int main()
 {
 	Program_run run;
-	int num = 0;
+	string num = "1";
 
 	cout << " // welcome // " << endl;
 
-	while (num == 0)
+	while (num == "1")
 	{
-		int choice = 0;
+		string choice;
 
 		cout << "how would u lke to use our program?" << endl;
 		cout << "if u want to input a file please neter 1" << endl;
 		cout << "if u want to type please type 2" << endl;
-		cin >> choice;
+		getline(cin,choice);
 
-		if (choice == 1)
+		if (choice == "1")
 		{
 			string dir_name;
 			cout << "please enter the directory name" << endl;
-			cin >> dir_name;
+			getline(cin,dir_name);
 
 			ifstream instream;
 			instream.open(dir_name);
@@ -34,7 +35,7 @@ int main()
 				cout << "Failed to open file " << endl;
 			}
 
-			
+
 			run.get_doc(dir_name);
 
 			cout << "Please wait while the program detects the persentage of plagerisum plagiarism" << endl;
@@ -64,7 +65,7 @@ int main()
 				cout << "Sentence: " << run.manip_Rabin_result(i).content << endl << "Plagiatized from:" << run.manip_Rabin_result(i).doc_dir << endl;
 			}
 			//cout << "Time used to detect plagiarism = " << run.get_Rabin_time() << " ms" << endl;
-			cout << "The persentage of plagerisum is " << run.get_Hamming_value() << "%" << endl;
+			cout << "The persentage of plagerisum is " << run.get_Rabin_value() << "%" << endl;
 
 			//------------------------------------------------------------------------------------------------------------------------
 			/*BOOYER MOORE*/
@@ -79,7 +80,7 @@ int main()
 				cout << "Sentence: " << run.manip_Booyer_result(i).content << endl << "Plagiatized from:" << run.manip_Booyer_result(i).doc_dir << endl;
 			}
 			//cout << "Time used to detect plagiarism = " << run.get_Booyer_time() << " ms" << endl;
-			cout << "The persentage of plagerisum is " << run.get_Hamming_value() << "%" << endl;
+			cout << "The persentage of plagerisum is " << run.get_Booyer_value() << "%" << endl;
 
 			//------------------------------------------------------------------------------------------------------------------------
 			/*KMP SEARCH*/
@@ -94,7 +95,7 @@ int main()
 				cout << "Sentence: " << run.manip_KMP_result(i).content << endl << "Plagiatized from:" << run.manip_KMP_result(i).doc_dir << endl;
 			}
 			//cout << "Time used to detect plagiarism = " << run.get_KMP_time() << " ms" << endl;
-			cout << "The persentage of plagerisum is " << run.get_Hamming_value() << "%" << endl;
+			cout << "The persentage of plagerisum is " << run.get_KMP_value() << "%" << endl;
 
 			//------------------------------------------------------------------------------------------------------------------------
 			/*Brut Force*/
@@ -109,30 +110,54 @@ int main()
 				cout << "Sentence: " << run.manip_BrutForce_result(i).content << endl << "Plagiatized from:" << run.manip_BrutForce_result(i).doc_dir << endl;
 			}
 			//cout << "Time used to detect plagiarism = " << run.get_BrutForce_time() << " ms" << endl;
-			cout << "The persentage of plagerisum is " << run.get_Hamming_value() << "%" << endl;
+			cout << "The persentage of plagerisum is " << run.get_BrutForce_value() << "%" << endl;
 			instream.close();
+			double AveragePercentage = (run.get_Hamming_value() + run.get_Rabin_value() + run.get_Booyer_value() + run.get_KMP_value() + run.get_BrutForce_value()) / 5;
+			cout << "The average Percentage is " << AveragePercentage << "%" << endl;
+			cout << endl;
+
+			run.addToDir(AveragePercentage, dir_name);
+
+			cout << "If you want to try again please enter 1" << endl;
+			cout << "If you want to quit please eneter 2" << endl;
+			getline(cin, num);
+			cout << endl;
 		}
-		else if (choice == 2)
+		else if (choice == "2")
 		{
 			string user_input;
 			string input_name;
 
 			cout << "the text u will input will be placed inside a text file what would you like its name to be" << endl;
-			cin >> input_name;
+			getline(cin,input_name);
 
-			cout << "please enter your text" << endl;
-			cin >> user_input;
+			input_name += ".txt";
 
-			//i need if condiditon to check if file name is already taken;
+			//if condiditon to check if file name is already taken;
+			if (run.check_name(input_name) == true)
+			{
+				cout << "the file name that ypu have enterd is already in our data base can you please neter another name" << endl;
+				getline(cin, input_name);
+			}
+			else
+			{
+				ofstream data_base;
+				data_base.open("database.txt", ios::app);
+				data_base << input_name;
+			}
 
 			ofstream new_file;
 			new_file.open(input_name);
 			if (new_file.fail())
 			{
 				cout << "a error has occured" << endl;
+				exit(1);
+				break;
 			}
-			else 
+			else
 			{
+				cout << "please enter your text" << endl;
+				getline(cin, user_input);
 				new_file << user_input;
 				new_file.close();
 			}
@@ -142,14 +167,16 @@ int main()
 			if (instream.fail()) {
 				cout << "Failed to open file " << endl;
 			}
-			
-			run.get_doc(input_name);
+			else
+			{
+				run.get_doc(input_name);
+			}
 
 			cout << "Please wait while the program detects the persentage of plagerisum plagiarism" << endl;
-			
+
 			//-----------------------------------------------------------------------------------------------------------------------
 			/*HAMMING DISTNACE*/
-			
+
 			run.check_match_hamming();
 			cout << "Below are the plagiarized sentences after using the first algorithm" << endl;
 			for (int i = 0; i < run.manip_Hamming().size(); i++)
@@ -161,7 +188,7 @@ int main()
 
 			//------------------------------------------------------------------------------------------------------------------------
 			/*RABIN KARP*/
-			
+
 			cout << endl;
 			cout << "----------------------------------" << endl;
 
@@ -172,11 +199,11 @@ int main()
 				cout << "Sentence: " << run.manip_Rabin_result(i).content << endl << "Plagiatized from:" << run.manip_Rabin_result(i).doc_dir << endl;
 			}
 			//cout << "Time used to detect plagiarism = " << run.get_Rabin_time() << " ms" << endl;
-			cout << "The persentage of plagerisum is " << run.get_Hamming_value() << "%" << endl;
+			cout << "The persentage of plagerisum is " << run.get_Rabin_value() << "%" << endl;
 
 			//------------------------------------------------------------------------------------------------------------------------
 			/*BOOYER MOORE*/
-			
+
 			cout << endl;
 			cout << "----------------------------------" << endl;
 
@@ -187,11 +214,11 @@ int main()
 				cout << "Sentence: " << run.manip_Booyer_result(i).content << endl << "Plagiatized from:" << run.manip_Booyer_result(i).doc_dir << endl;
 			}
 			//cout << "Time used to detect plagiarism = " << run.get_Booyer_time() << " ms" << endl;
-			cout << "The persentage of plagerisum is " << run.get_Hamming_value() << "%" << endl;
+			cout << "The persentage of plagerisum is " << run.get_Booyer_value() << "%" << endl;
 
 			//------------------------------------------------------------------------------------------------------------------------
 			/*KMP SEARCH*/
-			
+
 			cout << endl;
 			cout << "----------------------------------" << endl;
 
@@ -202,11 +229,11 @@ int main()
 				cout << "Sentence: " << run.manip_KMP_result(i).content << endl << "Plagiatized from:" << run.manip_KMP_result(i).doc_dir << endl;
 			}
 			//cout << "Time used to detect plagiarism = " << run.get_KMP_time() << " ms" << endl;
-			cout << "The persentage of plagerisum is " << run.get_Hamming_value() << "%" << endl;
+			cout << "The persentage of plagerisum is " << run.get_KMP_value() << "%" << endl;
 
 			//------------------------------------------------------------------------------------------------------------------------
 			/*Brut Force*/
-			
+
 			cout << endl;
 			cout << "----------------------------------" << endl;
 
@@ -217,12 +244,24 @@ int main()
 				cout << "Sentence: " << run.manip_BrutForce_result(i).content << endl << "Plagiatized from:" << run.manip_BrutForce_result(i).doc_dir << endl;
 			}
 			//cout << "Time used to detect plagiarism = " << run.get_BrutForce_time() << " ms" << endl;
-			cout << "The persentage of plagerisum is " << run.get_Hamming_value() << "%" << endl;
+			cout << "The persentage of plagerisum is " << run.get_BrutForce_value() << "%" << endl;
+			instream.close();
+			double AveragePercentage = (run.get_Hamming_value() + run.get_Rabin_value() + run.get_Booyer_value() + run.get_KMP_value() + run.get_BrutForce_value()) / 5;
+			cout << "The average Percentage is " << AveragePercentage << endl;
+			cout << endl;
+
+			cout << "If you want to try again please enter 1" << endl;
+			cout << "If you want to quit please eneter 2" << endl;
+			getline(cin, num);
+			cout << endl;
 		}
 		else
 		{
+			cout << endl;
 			cout << "your input is incorrect please try again and input 1 or 2" << endl;
-			num = 0;
+			cout << endl;
+			num = "1";
 		}
 	}
+	return 0;
 }

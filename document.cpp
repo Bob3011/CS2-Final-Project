@@ -2,6 +2,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 #include "Document.h"
 using namespace std;
 
@@ -51,7 +52,7 @@ void Document::fillInText() {
 		text += sentences[i] + " ";
 	}
 }
-void Document::adjustSentence(){
+void Document::adjustSentence() {
 	for (int i = 0; i < sentences.size(); i++)
 	{
 		string temp = "";
@@ -68,5 +69,78 @@ void Document::adjustSentence(){
 			}
 		}
 		sentences[i] = temp;
+	}
+}
+void Document::set_directory(string d)
+{
+	directory = d;
+}
+
+string Document::get_directory()
+{
+	return directory;
+}
+
+void Document::set_txt(string t)
+{
+	text = t;
+}
+
+string Document::get_txt()
+{
+	return text;
+}
+
+vector <string> Document::get_sentenses()
+{
+	return sentences;
+}
+
+string Document::manip_sentenses(int n)
+{
+	return sentences[n];
+}
+
+bool Document::check_name(string name)
+{
+	bool ans = false;
+	ifstream dataBase;
+	vector<string> file_names;
+
+	dataBase.open("dataBase.txt");
+	if (dataBase.fail())
+	{
+		cout << "an internal error has occured try again later or contact us for help" << endl;
+		exit(1);
+	}
+	else
+	{
+		string files;
+		while (getline(dataBase, files))
+		{
+			file_names.push_back(files);
+		}
+
+		for (int i = 0; i < file_names.size(); i++)
+		{
+			if (name == file_names[i])
+			{
+				ans = true;
+				break;
+			}
+		}
+
+		dataBase.close();
+	}
+	return ans;
+}
+
+void Document :: addToDir(double percentage, string name)
+{
+	if (percentage < 5)
+	{
+		ofstream dir;
+		dir.open("Dir.txt", ios::app);
+		dir << name;
 	}
 }
