@@ -1,6 +1,6 @@
 # CS2-Final-Project 
 Creators: Abdallah Ibrahim ID: 900222034 - Samar Ahmed ID: 900222721 - Bushra ALqahtani ID: 900221024
-simple plagerisum detection program:
+# *simple plagerisum detection program:
 
 How to us the program:
 - all files are avialable int the plagerisum final project
