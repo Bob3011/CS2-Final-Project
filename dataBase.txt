@@ -1,3 +1,0 @@
-Check1.txt
-Check2.txt
-Check3.txt
